@@ -5,7 +5,7 @@ const cors = require("cors");
 
 //const cookieParser = require("cookie-parser");
 //const sendToken = require("./utils/jwtToken");
-const port=process.env.PORT || 5000;
+const port=process.env.PORT || 4000;
 const path = require("path");
 const dotenv=require("dotenv");
 dotenv.config({ path: './config.env'})
