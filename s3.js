@@ -60,8 +60,10 @@ const s3= new AWS.S3({
   async function awsMultipartUpload(req, res, next) {
     let s3_links = [];
     let chunkSize = 5 * 1024 * 1024;
-    console.log(req.files ,"hello ile")
     //console.log(req.body)
+    console.log(req.files)
+    
+    
     for (let i = 0; req.files && i < req.files.length; i++) {
       let numberOfChunks = Math.floor(req.files[i].size / chunkSize) + 1;
       let Parts = [];
@@ -101,7 +103,7 @@ const s3= new AWS.S3({
         s3_links.push(uploaded.Location);
         req.body.pic_name=uploaded.Key
       } catch (error) {
-        console.log(error);
+        //console.log(error);
         await s3.abortMultipartUpload(initiateUpload);
       }
     }
@@ -114,9 +116,8 @@ const s3= new AWS.S3({
         req.body.links.push(...s3_links);
       }
     } else if (s3_links.length) {
-      console.log(s3.links)
-      console.log(s3_links)
       req.body.links = s3_links;
+      //console.log(req.body.links);
     }
     //console.log(req.body);
     next();

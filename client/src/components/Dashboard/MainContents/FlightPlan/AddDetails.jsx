@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import "./AddDetails.css";
 import { useState } from 'react';
 import axios from 'axios';
@@ -9,7 +9,10 @@ const options = {
 
 export const AddDetails = () => {
 
-   const [images,setImages] = useState([]);
+  const [images, setImages] = useState([]);
+
+  const [imageCount, setImageCount] = useState(2)
+
 
   const userTemplate = {
     Flight_Log_NO: "",
@@ -21,9 +24,28 @@ export const AddDetails = () => {
     Distance_Covered: "",
     Duration: "",
     Remarks: "",
+    Count: imageCount,
   };
 
   const [users, setUsers] = useState([userTemplate])
+
+  const myDuration = (index) => {
+    const stTime = (users[index].Operation_Start_Time)
+    const arrayStTime = stTime.split(":");
+    var minStTime = (parseInt(arrayStTime[0], 10) * 60) + (parseInt(arrayStTime[1], 10))
+
+    const enTime = (users[index].Operation_End_Time)
+    const arrayEnTime = enTime.split(":");
+    var minEnTime = (parseInt(arrayEnTime[0], 10) * 60) + (parseInt(arrayEnTime[1], 10))
+
+    const durMin = (minEnTime - minStTime)
+    if (durMin) {
+      return durMin + " Min"
+    }
+    else {
+      return "-"
+    }
+  }
 
   // add new row
   const addUser = () => {
@@ -39,15 +61,31 @@ export const AddDetails = () => {
     setUsers(updatedUsers);
   }
 
+
+  // const imageHandler = (e) => {
+  //   const multiple = e.target.files
+  //   for(let i = 0; i < multiple.length; i++) {
+  //     images.push(multiple[i])
+  //   }
+  //   setImages([images])
+  // }
+
   const imageHandler = (e) => {
-    
-   // console.log(e.target.files[0]);
-    setImages(e.target.files[0])
+    const multiple = e.target.files;
+    setImages(prev => {
+      return [...prev, multiple]
+    })
   }
+
+  useEffect(() => {
+    console.clear();
+    images.length && console.log(images)
+    setImageCount(images.length)
+  }, [images])
 
   const [data, setData] = useState({
     date: "",
-     District: "",
+    District: "",
     crewName: "",
     rIncharge: "",
     fSupervisor: "",
@@ -71,17 +109,14 @@ export const AddDetails = () => {
       }
     })
   }
+
+
   const onSubmit = (event) => {
     event.preventDefault();
     const formdata = new FormData();
-    for(let i=0;i<images.length;i++)
-    {
-      formdata.append('files', images[i])
-    }
-    
     formdata.append('User_Id', localStorage.getItem("User_Id"))
     formdata.append('Date', data.date)
-    formdata.append("District",data.District)
+    formdata.append("District", data.District)
     formdata.append('Crew_name', data.crewName)
     formdata.append('Raider_Incharge_name', data.rIncharge)
     formdata.append('Flight_Supervisor', data.fSupervisor)
@@ -94,15 +129,22 @@ export const AddDetails = () => {
     formdata.append('Mobile_Number', data.mobileNum)
     formdata.append('Authorized_By', data.authBy)
     formdata.append('Flight_Details', JSON.stringify(users));
+   // images.forEach((file,index) => {
+    //  formdata.append('files', file[0])
+    // })
+    for (let i = 0; i <images[0].length; i++) {
+      for (let j = 0; j <images[i].length; j++) {
+        formdata.append("files", images[i][j]);
+      }
+    }
     axios.post("/operation_Log/Add_Details",
       formdata,
-       options
     ).then((response) => {
-      
       alert("Form Submitted");
+      console.log(response)
+
     })
   }
-  
 
 
   return (
@@ -259,32 +301,32 @@ export const AddDetails = () => {
             <table className='fptable'>
               <thead>
                 <tr className='table-head'>
-                  <th className='start'>Flight Log No.</th>
+                  {/* <th className='start'>Flight Log No.</th> */}
                   <th>Drone ID</th>
                   <th>Payload Type</th>
                   <th>Take Off Site (Lat-Long)</th>
                   <th>Operation Start Time</th>
                   <th>Operation End Time</th>
                   <th>Distance Covered</th>
-                  <th>Duration </th>
+                  <th>Duration</th>
                   <th>Remarks</th>
-                  { <th className='end'>Attach File</th>}
+                  <th className='end'>Attach File</th>
                 </tr>
               </thead>
               <tbody>
                 {
                   users.map((user, index) => (
                     <tr key={index}>
-                      <td className='logno'><input className='tab-inp' type="text" name='Flight_Log_NO' onChange={e => onChange(e, index)} required /></td>
+                      {/* <td className='logno'><input className='tab-inp' type="text" name='Flight_Log_NO' onChange={e => onChange(e, index)} required /></td> */}
                       <td><input className='tab-inp' type="text" name='Drone_Id' onChange={e => onChange(e, index)} required /></td>
                       <td><input className='tab-inp' type="text" name='Payload_Type' onChange={e => onChange(e, index)} required /></td>
                       <td><input className='tab-inp' type="text" name='Take_Off_site' onChange={e => onChange(e, index)} required /></td>
                       <td><input className='tab-inp' type="time" name='Operation_Start_Time' onChange={e => onChange(e, index)} required /></td>
                       <td><input className='tab-inp' type="time" name='Operation_End_Time' onChange={e => onChange(e, index)} required /></td>
                       <td><input className='tab-inp' type="text" name='Distance_Covered' onChange={e => onChange(e, index)} required /></td>
-                      <td><input className='tab-inp' type="text" name='Duration' onChange={e => onChange(e, index)} required /></td>
+                      <td><input className='tab-inp' type="text" name='Duration' value={myDuration(index)} onClick={e => onChange(e, index)} required /></td>
                       <td><input className='tab-inp' type="text" name='Remarks' onChange={e => onChange(e, index)} required /></td>
-                      { <td><input className='tab-inp' type="file" name='Files' onChange={imageHandler} required multiple/></td> }
+                      <td><input className='tab-inp' type="file" name='Files' onChange={imageHandler} required multiple /></td>
                     </tr>
                   ))
                 }

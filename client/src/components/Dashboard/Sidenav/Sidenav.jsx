@@ -28,6 +28,10 @@ export const Sidenav = () => {
           <img className='snav-icons' src={snav1} alt="snav1" />
           <p className='snav-link'>Home</p>
         </NavLink>
+        <NavLink className={({ isActive }) => (isActive ? "active-style" : 'none')} to="/flightplan">
+          <img className='snav-icons' src={snav5} alt="snav1" />
+          <p className='snav-link'>Flight Plan</p>
+        </NavLink>
         <NavLink className={({ isActive }) => (isActive ? "active-style" : 'none')} to="/gallery">
           <img className='snav-icons' src={snav2} alt="snav1" />
           <p className='snav-link'>Photos and Videos</p>
@@ -39,10 +43,6 @@ export const Sidenav = () => {
         <NavLink className={({ isActive }) => (isActive ? "active-style" : 'none')} to="/spot">
           <img className='snav-icons' src={snav4} alt="snav1" />
           <p className='snav-link'>Spot</p>
-        </NavLink>
-        <NavLink className={({ isActive }) => (isActive ? "active-style" : 'none')} to="/flightplan">
-          <img className='snav-icons' src={snav5} alt="snav1" />
-          <p className='snav-link'>Flight Plan</p>
         </NavLink>
         <NavLink className={({ isActive }) => (isActive ? "active-style" : 'none')} to="/livetrack">
           <img className='snav-icons' src={snav6} alt="snav1" />

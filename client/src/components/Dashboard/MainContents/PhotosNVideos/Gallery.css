@@ -1,12 +1,13 @@
 .cr-box{
     width: 100%;
+    height: 70%;
     display: flex;
 }
-.carousel ,.slide{
+.photosnvideos-carousel-slide{
     width: 69%;
     /* border: 1px solid green; */
 }
-.carousel-indicators{
+.photosnvideos-carousel-indicators{
     margin: 0px;
     width: 150%;
     height: 40%;
@@ -57,4 +58,9 @@ button.read-more{
     position: absolute;
     bottom: 30px;
     right: 30px;
+}
+
+.photosnvideos-cr-inner{
+    border-radius: 29px;
+    height: 100%;
 }

@@ -36,10 +36,9 @@ const flightSchema= new Schema({
     Remarks:{
         type: String,
     },
-    Image:{
-        type: String,
+    Images:{
+        type:Array,
     }
-    
 
 })
 
